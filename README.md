@@ -26,4 +26,5 @@ The traffic included encoded HTTP requests, potential C2 callbacks, and behavior
 Packet capture analysis simulating an internal compromise at a medical research lab.  
 Includes report, IOCs, and blue-team detection strategy.
 
-→ [View Report](nemotodes-infection/report.md)
+[View Report →](nemotodes-infection/report.md)
+

@@ -3,11 +3,6 @@
 ## Preliminary Finding
 Captured malware traffic from a medical research facility showing signs of early-stage infection and C2 callbacks.
 
-##  Key IOCs
-- External IP: `104.117.247.99`
-- Internal Victim IP: `10.11.26.183`
-- Suspicious HTTP Request: Base64-style GET traffic
-
 ##  Detection Strategy
 - Alert on encoded HTTP URIs
 - Flag outbound traffic to low-reputation IPs
@@ -35,6 +30,8 @@ This finding emphasizes the importance of context in SOC investigations — enco
 
 *Figure 1: Encoded request sent to Let's Encrypt OCSP server by Windows host.*
 
+-- (This was a start, and false, but am keeping it here for realistic reasons)
+
 
 ##  Mitigation
 - Patch systems, restrict outbound traffic, segment network zones
@@ -43,27 +40,16 @@ This finding emphasizes the importance of context in SOC investigations — enco
 ## Initial Sweep & Detection Filters
 The analysis began with a broad sweep using the following Wireshark filters:
 
-plaintext
+```
 http.request || tls.handshake.extensions_server_name
+```
 This revealed:
 
 Multiple encrypted TLS sessions to known Microsoft services (legit)
 
-One standout anomaly: a base64-style encoded HTTP GET to 104.117.247.99
+One standout anomaly: a base64-style encoded HTTP POST to 194.180.191.64.
 
- Suspicion Trigger: Encoded GET Request
-That suspicious request didn't match standard Windows telemetry:
 
-- It wasn’t part of certificate validation or OCSP traffic
-
-- The IP wasn't affiliated with Microsoft
-
-- The URI looked obfuscated or encoded
-
-- This flagged 10.11.26.183 — the internal host — as potentially compromised.
-
- Pivot: Searching for More Outbound Behavior
-After tracing outbound activity from that host, we expanded filtering to inspect all HTTP traffic, including plain requests not wrapped in TLS. This surfaced the following outbound request:
 
 http://194.180.191.64/fakeurl.htm
 

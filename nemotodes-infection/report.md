@@ -31,7 +31,7 @@ Server: nginx
 Host: Let's Encrypt
 This finding emphasizes the importance of context in SOC investigations — encoded traffic and external requests can mimic malicious behavior, but not all anomalies are threats.
 
-[View Screenshot](screenshots/suspicious-get-request.png)
+[![VirusTotal Screenshot](screenshots/suspicious-url-virustotal.png)](screenshots/suspicious-url-virustotal.png)
 
 *Figure 1: Encoded request sent to Let's Encrypt OCSP server by Windows host.*
 

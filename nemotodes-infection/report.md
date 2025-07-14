@@ -31,7 +31,9 @@ Server: nginx
 Host: Let's Encrypt
 This finding emphasizes the importance of context in SOC investigations — encoded traffic and external requests can mimic malicious behavior, but not all anomalies are threats.
 
+![Suspicious GET Request – packet #12788](screenshots/suspicious-get-request.png)
 
+*Figure 1: Encoded HTTP request to Let's Encrypt OCSP server. Legitimate traffic misidentified as potential C2.*
 
 
 ##  Mitigation

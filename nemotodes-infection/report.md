@@ -54,13 +54,13 @@ One standout anomaly: a base64-style encoded HTTP GET to 104.117.247.99
  Suspicion Trigger: Encoded GET Request
 That suspicious request didn't match standard Windows telemetry:
 
-It wasn’t part of certificate validation or OCSP traffic
+- It wasn’t part of certificate validation or OCSP traffic
 
-The IP wasn't affiliated with Microsoft
+- The IP wasn't affiliated with Microsoft
 
-The URI looked obfuscated or encoded
+- The URI looked obfuscated or encoded
 
-This flagged 10.11.26.183 — the internal host — as potentially compromised.
+- This flagged 10.11.26.183 — the internal host — as potentially compromised.
 
  Pivot: Searching for More Outbound Behavior
 After tracing outbound activity from that host, we expanded filtering to inspect all HTTP traffic, including plain requests not wrapped in TLS. This surfaced the following outbound request:

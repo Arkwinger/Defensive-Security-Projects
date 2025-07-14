@@ -1,1 +1,4 @@
-
+[+] External IP: 104.117.247.99
+[+] Internal Host IP: 10.11.26.183
+[+] Suspicious URI: /MFMwUTBPM... (see packet #12788)
+[+] Potential C2 Host: 104.117.247.99

@@ -31,7 +31,7 @@ Server: nginx
 Host: Let's Encrypt
 This finding emphasizes the importance of context in SOC investigations — encoded traffic and external requests can mimic malicious behavior, but not all anomalies are threats.
 
-[![VirusTotal Screenshot](screenshots/suspicious-url-virustotal.png)](screenshots/suspicious-url-virustotal.png)
+[GET Request Packet Screenshot](screenshots/suspicious-get-request.png)](screenshots/suspicious-get-request.png)
 
 *Figure 1: Encoded request sent to Let's Encrypt OCSP server by Windows host.*
 
@@ -67,7 +67,7 @@ After tracing outbound activity from that host, we expanded filtering to inspect
 
 http://194.180.191.64/fakeurl.htm
 
-[![C2 Detection in VirusTotal](screenshots/suspicious-url-virustotal.png)](screenshots/suspicious-url-virustotal.png)
+[View VirusTotal Screenshot](screenshots/suspicious-url-virustotal.png)
 
 *Figure X: VirusTotal detection showing multiple engines flagging NetSupport RAT indicators linked to suspicious URL.*
 

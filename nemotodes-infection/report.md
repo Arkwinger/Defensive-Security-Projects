@@ -33,11 +33,7 @@ This finding emphasizes the importance of context in SOC investigations — enco
 -- (This was a start, and false, but am keeping it here for realistic reasons)
 
 
-##  Mitigation
-- Patch systems, restrict outbound traffic, segment network zones
-
-
-## Initial Sweep & Detection Filters
+## Findings
 The analysis began with a broad sweep using the following Wireshark filters:
 
 ```
@@ -49,13 +45,13 @@ Multiple encrypted TLS sessions to known Microsoft services (legit)
 
 One standout anomaly: a base64-style encoded HTTP POST to 194.180.191.64.
 
+[GET Request Packet Screenshot](screenshots/suspicious-post-request.png)](screenshots/suspicious-post-request.png)
 
-
-http://194.180.191.64/fakeurl.htm
+hxxp://194[.]180[.]191[.]64/fakeurl[.]htm
 
 [View VirusTotal Screenshot](screenshots/suspicious-url-virustotal.png)
 
-*Figure X: VirusTotal detection showing multiple engines flagging NetSupport RAT indicators linked to suspicious URL.*
+VirusTotal detection showing multiple engines flagging NetSupport RAT indicators linked to suspicious URL.*
 
 
 This endpoint is linked to NetSupport Manager RAT operations and known malware campaigns.
@@ -64,11 +60,11 @@ This endpoint is linked to NetSupport Manager RAT operations and known malware c
  Confirmation
 Packet analysis showed:
 
-No encryption (plain HTTP)
+- No encryption (plain HTTP)
 
-Host 10.11.26.183 reaching out to a confirmed C2 server
+- Host 10.11.26.183 reaching out to a confirmed C2 server
 
-No headers resembling legitimate telemetry
+- No headers resembling legitimate telemetry
 
 
 

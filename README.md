@@ -1,16 +1,11 @@
 # Analyst-Portfolio
 
-## SOC Analysis Lab
+## SOC Analysis Projects
 
-This repo showcases my ongoing cybersecurity detection and analysis projects, with a focus on packet capture investigations, threat hunting, and SOC-level reporting.
+This repo showcases my ongoing cybersecurity detection and analysis projects, with a focus on SIEM investigations, threat hunting, and digital forensics.
 
-Each folder includes:
--  A full writeup simulating a real-world incident report
--  Key indicators of compromise (IOCs)
--  Custom tools or parsing logic (when applicable)
--  Screenshots or supporting artifacts
 
-I started this project to document my learning and build out a portfolio of actionable skills — everything here is hands-on and manually analyzed.
+I started this project to document my learning and build out a portfolio of actionable skills — everything here is hands-on and manually analyzed. These projects simulate real world SOC environments: monitoring systems, responding to threats, and using the tools that real teams use.
 
 ---
 

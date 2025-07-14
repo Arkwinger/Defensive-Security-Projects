@@ -67,7 +67,10 @@ After tracing outbound activity from that host, we expanded filtering to inspect
 
 http://194.180.191.64/fakeurl.htm
 
-<img width="2306" height="1306" alt="suspicious-url-virustotal" src="https://github.com/user-attachments/assets/2f0df1c7-6aab-4c62-8335-62570dc903cf" />
+![VirusTotal Analysis Screenshot](screenshots/suspicious-url-virustotal.png)
+
+*Figure X: VirusTotal detection showing multiple engines flagging NetSupport RAT indicators linked to suspicious URL.*
+
 
 This endpoint is linked to NetSupport Manager RAT operations and known malware campaigns.
 

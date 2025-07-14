@@ -1,6 +1,6 @@
 # Nemotodes Infection Analysis – November 2024
 
-##  Summary
+## Preliminary Finding
 Captured malware traffic from a medical research facility showing signs of early-stage infection and C2 callbacks.
 
 ##  Key IOCs
@@ -38,3 +38,60 @@ This finding emphasizes the importance of context in SOC investigations — enco
 
 ##  Mitigation
 - Patch systems, restrict outbound traffic, segment network zones
+
+
+## Initial Sweep & Detection Filters
+The analysis began with a broad sweep using the following Wireshark filters:
+
+plaintext
+http.request || tls.handshake.extensions_server_name
+This revealed:
+
+Multiple encrypted TLS sessions to known Microsoft services (legit)
+
+One standout anomaly: a base64-style encoded HTTP GET to 104.117.247.99
+
+ Suspicion Trigger: Encoded GET Request
+That suspicious request didn't match standard Windows telemetry:
+
+It wasn’t part of certificate validation or OCSP traffic
+
+The IP wasn't affiliated with Microsoft
+
+The URI looked obfuscated or encoded
+
+This flagged 10.11.26.183 — the internal host — as potentially compromised.
+
+ Pivot: Searching for More Outbound Behavior
+After tracing outbound activity from that host, we expanded filtering to inspect all HTTP traffic, including plain requests not wrapped in TLS. This surfaced the following outbound request:
+
+http://194.180.191.64/fakeurl.htm
+
+<img width="2306" height="1306" alt="suspicious-url-virustotal" src="https://github.com/user-attachments/assets/2f0df1c7-6aab-4c62-8335-62570dc903cf" />
+
+This endpoint is linked to NetSupport Manager RAT operations and known malware campaigns.
+
+
+ Confirmation
+Packet analysis showed:
+
+No encryption (plain HTTP)
+
+Host 10.11.26.183 reaching out to a confirmed C2 server
+
+No headers resembling legitimate telemetry
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -67,7 +67,7 @@ After tracing outbound activity from that host, we expanded filtering to inspect
 
 http://194.180.191.64/fakeurl.htm
 
-![VirusTotal Analysis Screenshot](screenshots/suspicious-url-virustotal.png)
+[![C2 Detection in VirusTotal](screenshots/suspicious-url-virustotal.png)](screenshots/suspicious-url-virustotal.png)
 
 *Figure X: VirusTotal detection showing multiple engines flagging NetSupport RAT indicators linked to suspicious URL.*
 

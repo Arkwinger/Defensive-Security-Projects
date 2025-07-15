@@ -2,59 +2,101 @@
 
 
 
-## 1. A suspicious binary was downloaded to the endpoint. What was the name of the binary?
-
-
-
-
-
-## 2. What is the address the binary was downloaded from? (Add http:// to your answer & defang the URL)
-
-
-
-
-
-## 3. What Windows executable was used to download the suspicious binary? (Enter full path)
-
-
-
-
-
-## 4. What command was executed to configure the suspicious binary to run with elevated privileges?
-
-
-
-
-
-## 5. What permissions will the suspicious binary run as? What was the command to run the binary with elevated privileges? (Format: User + ; + CommandLine)
-
-
-
-
-
-## 6. The suspicious binary connected to a remote server. What address did it connect to? (Add http:// to your answer & defang the URL)
-
-
-
-
-
-## 7. A PowerShell script was downloaded to the same location as the suspicious binary. What was the name of the file?
-
-
-
-
-
-## 8. The malicious script was flagged as malicious. What do you think was the actual name of the malicious script?
+## 1. How many events were collected and Ingested in the index main?
 
 
 
 
 
 
-## 9. A ransomware note was saved to disk, which can serve as an IOC. What is the full path to which the ransom note was saved?
+
+
+
+###  **Answer:** `12256`
+
+## 2. On one of the infected hosts, the adversary was successful in creating a backdoor user. What is the new username?
 
 
 
 
 
-## 10. The script saved an image file to disk to replace the user's desktop wallpaper, which can also serve as an IOC. What is the full path of the image?
+
+###  **Answer:** `A1berto`
+
+## 3. On the same host, a registry key was also updated regarding the new backdoor user. What is the full path of that registry key?
+
+
+
+
+
+
+###  **Answer:** `HKLM\SAM\SAM\Domains\Account\Users\Names\A1berto`
+
+## 4. Examine the logs and identify the user that the adversary was trying to impersonate.
+
+
+
+
+
+
+###  **Answer:** `Alberto`
+
+## 5. What is the command used to add a backdoor user from a remote computer?
+
+
+
+
+
+
+### **Answer:** `C:\windows\System32\Wbem\WMIC.exe" /node:WORKSTATION6 process call create "net user /add A1berto paw0rd1`
+
+## 6. How many times was the login attempt from the backdoor user observed during the investigation?
+
+
+
+### **Answer:** `0`
+
+## 7. What is the name of the infected host on which suspicious Powershell commands were executed?
+
+
+
+
+
+### Q1: **Answer:** `James.browne`
+
+## 8. PowerShell logging is enabled on this device. How many events were logged for the malicious PowerShell execution?
+
+
+
+
+
+
+### **Answer:** `79`
+
+## 9. An encoded Powershell script from the infected host initiated a web request. What is the full URL?
+
+
+
+
+
+
+
+
+### **Answer:** `hxxp[://]10[.]10[.]10[.]5/news[.]php`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

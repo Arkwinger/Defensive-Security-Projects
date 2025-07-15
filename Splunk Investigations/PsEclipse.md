@@ -1,12 +1,25 @@
 # PS Eclipse Walkthrough
 
+<img width="733" height="378" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/e13dd90b-46ea-467f-a3b9-9dfdd38f9980" />
+
+
 "Scenario : You are a SOC Analyst for an MSSP (Managed Security Service Provider) company called TryNotHackMe .
 
 A customer sent an email asking for an analyst to investigate the events that occurred on Keegan's machine on Monday, May 16th, 2022 . The client noted that the machine is operational, but some files have a weird file extension. The client is worried that there was a ransomware attempt on Keegan's device. 
 
 Your manager has tasked you to check the events in Splunk to determine what occurred in Keegan's device."
 
-The date of the incident is Monday, May 16th, 2022. We will set our time range to that day:
+TL;DR Summary
+
+Keegan’s device was hit by the BlackSun ransomware. The attacker used obfuscated PowerShell to download a binary, scheduled it to run as SYSTEM, connected to external ngrok domains, and dropped ransom notes and wallpaper images. All actions were traced via Splunk logs using process and file creation events.
+
+## Tools Used
+- Splunk – for event log analysis
+- CyberChef – for decoding Base64 payloads
+- VirusTotal – to identify malware and validate IOCs
+
+## Date
+- The date of the incident is Monday, May 16th, 2022. We will set our time range to that day:
 
 <img width="1218" height="531" alt="Screenshot (78)" src="https://github.com/user-attachments/assets/e348fec4-157c-4d2b-b5d0-77449c3596a5" />
 
@@ -164,7 +177,39 @@ This file serves as a clear Indicator of Compromise (IOC) and is commonly used b
 
 ### Q9: **Answer:** ```C:\Users\keegan\Downloads\vasg6b0wmw029hd\BlackSun_README.txt```
 
-# 10.
+# 10. The script saved an image file to disk to replace the user's desktop wallpaper, which can also serve as an IOC. What is the full path of the image?
+
+This would most likely be either a .png or .jpg file. Additionally, the most common location for public-facing images is in `C:\Users\Public\Pictures`. I also added EventCode=11 for file creation events. 
+I used the query:
+```
+index=* EventCode=11 ("*.jpg" OR "*.png") "C:\\Users\\Public\\Pictures"
+```
+<img width="711" height="142" alt="Screenshot (97)" src="https://github.com/user-attachments/assets/5185ef6a-20a4-435b-a968-90538e60c261" />
+
+
+### Q10: **Answer:** ```C:\Users\Public\Pictures\blacksun.jpg```
+
+## Summary
+This investigation into the PS Eclipse room uncovered a full attack chain involving a suspicious binary (OUTSTANDING_GUTTER.exe) and the BlackSun ransomware. Using Splunk and thoughtful forensic pivots, I was able to reconstruct key steps taken by the attacker:
+
+ The binary was downloaded via an obfuscated PowerShell command and saved to the Temp folder.
+
+ It was configured to run with elevated privileges through a scheduled task created via schtasks.exe.
+
+ The task was set to run as NT AUTHORITY\SYSTEM, confirming SYSTEM-level execution.
+
+ Once launched, the binary connected to a remote ngrok.io server — a clear external Indicator of Compromise (IOC).
+
+ A PowerShell script (script.ps1) was dropped alongside the binary, and further analysis revealed its role in executing and customizing the ransomware behavior.
+
+ The ransomware saved a ransom note (BlackSun_README.txt) and replaced the desktop wallpaper with a threatening image (blacksun.jpg), both of which serve as strong IOCs for detection across environments.
+
+
+
+
+
+
+
 
 
 

@@ -134,6 +134,7 @@ Ngrok domains are often used by attackers to proxy traffic or host temporary pay
 # 7. A PowerShell script was downloaded to the same location as the suspicious binary. What was the name of the file?
 
 After previously finding the `OUTSTANDING_GUTTER.exe` in the `C:\Windows\Temp directory`, it would be a good idea to see if there were other suspicious binaries downloaded to the same location.
+PowerShell scripts often serve as execution vehicles for ransomware or other payloads.
 
 I used this Splunk query to look for .ps1 files created in the same directory:
 ```
@@ -186,6 +187,8 @@ index=* EventCode=11 ("*.jpg" OR "*.png") "C:\\Users\\Public\\Pictures"
 ```
 <img width="711" height="142" alt="Screenshot (97)" src="https://github.com/user-attachments/assets/5185ef6a-20a4-435b-a968-90538e60c261" />
 
+Ransomware often changes the desktop wallpaper as a scare tactic — broadcasting its presence and pressuring the victim to pay. Dropping the image file into a shared, publicly accessible folder makes it easier to apply system-wide changes via script.
+
 
 ### Q10: **Answer:** ```C:\Users\Public\Pictures\blacksun.jpg```
 
@@ -204,7 +207,7 @@ This investigation into the PS Eclipse room uncovered a full attack chain involv
 
  The ransomware saved a ransom note (BlackSun_README.txt) and replaced the desktop wallpaper with a threatening image (blacksun.jpg), both of which serve as strong IOCs for detection across environments.
 
-
+Thanks for reading!!! 
 
 
 

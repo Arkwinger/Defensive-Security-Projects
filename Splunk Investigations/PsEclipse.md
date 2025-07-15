@@ -98,21 +98,73 @@ We use the query:
 ```
 index=* EventCode=1 "schtasks.exe" "Run" "OUTSTANDING_GUTTER.exe"
 ```
+<img width="602" height="290" alt="Screenshot (90)" src="https://github.com/user-attachments/assets/dcb6d459-1614-400d-b640-6add6bbba9f9" />
+
+Previously, we confirmed that the task runs unto NT AUTHORITY\SYSTEM. We need to combine our command used to run the binary with the user. 
 
 
+### Q5: **Answer:** ```NT AUTHORITY\SYSTEM;"C:\Windows\system32\schtasks.exe" /Run /TN OUTSTANDING_GUTTER.exe```
+
+# 6. The suspicious binary connected to a remote server. What address did it connect to? Add http:// to your answer & defang the URL.
+
+Since outbound connections often start with a DNS lookup, I used this query to find DNS activity tied to SYSTEM-level processes, we use the query:
+```
+index=* User="NT AUTHORITY\\SYSTEM" TaskCategory="Dns query (rule: DnsQuery)"
+```
+
+<img width="595" height="317" alt="Screenshot (92)" src="https://github.com/user-attachments/assets/1734002f-4099-4e2a-935a-572a093a490a" />
+
+Ngrok domains are often used by attackers to proxy traffic or host temporary payloads. This is the key IOC for the incident. 
+
+### Q6: **Answer:** ```hxxp://9030-181-215-214-32[.]ngrok[.]io```
+
+# 7. A PowerShell script was downloaded to the same location as the suspicious binary. What was the name of the file?
+
+After previously finding the `OUTSTANDING_GUTTER.exe` in the `C:\Windows\Temp directory`, it would be a good idea to see if there were other suspicious binaries downloaded to the same location.
+
+I used this Splunk query to look for .ps1 files created in the same directory:
+```
+index=* EventCode=11 "C:\\Windows\\Temp" "*.ps1"
+```
+
+From the results, I looked into the `TargetFIlename` field and found several `.ps1` files. One of them stood out to me: 
+<img width="606" height="356" alt="Screenshot (93)" src="https://github.com/user-attachments/assets/8479a208-1955-4382-b1c8-de6aca6e056e" />
+
+### Q7: **Answer:** ```script.ps1```
 
 
+# 8. The malicious script was flagged as malicious. What do you think was the actual name of the malicious script?
 
+This is looking for the name of the malicious scipt. We need to find the SHA256 hash of the file and run it through virus total.
 
+Simple query:
+```
+index=* script.ps1
+```
 
+We can find the SHA256 hash by looking at the first event found:
+<img width="1439" height="534" alt="Screenshot (94)" src="https://github.com/user-attachments/assets/52ae76a3-be9a-480a-9fd8-897aa7beb30e" />
 
+Virustotal shows the actual name of the script right at the top.
+<img width="2333" height="1347" alt="Screenshot (95)" src="https://github.com/user-attachments/assets/ee162169-a725-4fa7-b9be-67070b5dc8ca" />
 
+### Q8: **Answer:** ```BlackSun.ps1```
 
+# 9. A ransomware note was saved to disk, which can serve as an IOC. What is the full path to which the ransom note was saved?
 
+For this question, after identifying the ransomware as BlackSun, I searched for any ransom notes dropped by the malware — typically named something like README.txt or containing the ransomware’s name:
+```
+index=* "BlackSun_README"
+```
+The first result contains the full path listed 
 
+<img width="1627" height="402" alt="Screenshot (96)" src="https://github.com/user-attachments/assets/d5aab6d9-27f7-4910-b7ca-b0278f917814" />
 
+This file serves as a clear Indicator of Compromise (IOC) and is commonly used by ransomware to demand payment or provide decryption instructions.
 
+### Q9: **Answer:** ```C:\Users\keegan\Downloads\vasg6b0wmw029hd\BlackSun_README.txt```
 
+# 10.
 
 
 

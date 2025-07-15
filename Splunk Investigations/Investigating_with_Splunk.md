@@ -1,6 +1,12 @@
 # Investigating with Splunk Walkthrough 
 
-"Scemario: SOC Analyst Johny has observed some anomalous behaviours in the logs of a few windows machines. It looks like the adversary has access to some of these machines and successfully created some backdoor. His manager has asked him to pull those logs from suspected hosts and ingest them into Splunk for quick investigation. Our task as SOC Analyst is to examine the logs and identify the anomalies."
+<img width="1130" height="405" alt="Screenshot (114)" src="https://github.com/user-attachments/assets/be5b16a9-bc21-47a0-b415-78ea130dbc86" />
+
+
+
+
+## Scenario:
+"SOC Analyst Johny has observed some anomalous behaviours in the logs of a few windows machines. It looks like the adversary has access to some of these machines and successfully created some backdoor. His manager has asked him to pull those logs from suspected hosts and ingest them into Splunk for quick investigation. Our task as SOC Analyst is to examine the logs and identify the anomalies."
 
 
 ## 1. How many events were collected and Ingested in the index main?
@@ -102,7 +108,6 @@ To identify the infected host where suspicious PowerShell commands were executed
 The Splunk query used:
 ```
 index=main powershell
-
 ```
 After using this query, I checked the Host name. Normally, I would have looked for entries with encoded or obfuscated PowerShell commands, long base64 strings, or suspicious cmdlets like Invoke-WebRequest, DownloadString, or FromBase64String. However, there was only one host...
 
@@ -148,8 +153,19 @@ And looking into the output, we can also see the end of the full URL:
 To safely report this as an Indicator of Compromise (IOC), we defang the URL:
 ### **Answer:** `hxxp[://]10[.]10[.]10[.]5/news[.]php`
 
+## Summary 
+This investigation revealed that an attacker created a backdoor user (A1berto) impersonating a real account, used WMIC to add it remotely, modified the SAM registry hive, and launched encoded PowerShell scripts to reach a suspicious URL (hxxp://10[.]10[.]10[.]5/news[.]php). These actions show clear signs of persistence, privilege abuse, and possible command-and-control.
 
+## Mitigation Recommendations
+Remove unauthorized users and reset credentials
 
+Enable full PowerShell logging (Script Block & Module)
+
+Restrict remote tools like WMIC using Group Policy
+
+Monitor EventIDs like 4720, 4624, 4103 for anomalies
+
+Block suspicious outbound URLs and inspect registry changes
 
 
 

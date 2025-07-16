@@ -1,5 +1,9 @@
 # New Hire Old Artifacts Walkthrough
 
+<img width="1000" height="500" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/9c2fe48f-baed-40e6-8594-b6bb2c142c37" />
+
+
+
 "You are a SOC Analyst for an MSSP (managed Security Service Provider) company called TryNotHackMe.
 
 
@@ -57,7 +61,7 @@ Answer:`IonicLarge.exe,PalitExplorer.exe`
 
 ### 4. The binary from the previous question made two outbound connections to a malicious IP address. What was the IP address? Enter the answer in a defang format.
 
-After identifying IonicLarge.exe as a suspicious binary in the Temp folder, I wanted to verify if it established outbound connections. Sysmon logs (Event ID 3) can reveal destination IPs initiated by executables — perfect for spotting command-and-control or data exfiltration behavior.
+After identifying IonicLarge.exe as a suspicious binary in the Temp folder, I wanted to verify if it established outbound connections. Sysmon logs (Event ID 3) can reveal destination IPs initiated by executables. This is perfect for spotting command-and-control or data exfiltration behavior.
 
 The Splunk query I used was:
 ```

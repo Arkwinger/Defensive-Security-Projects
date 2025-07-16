@@ -1,6 +1,7 @@
 # New Hire Old Artifacts Walkthrough
 
-<img width="1000" height="500" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/9c2fe48f-baed-40e6-8594-b6bb2c142c37" />
+<img width="1000" height="400" alt="Screenshot (115)" src="https://github.com/user-attachments/assets/99bad641-b225-4497-ba9d-c9d2b6abc5cf" />
+
 
 
 
@@ -89,22 +90,87 @@ Answer:`HKLM\SOFTWARE\Policies\Microsoft\Windows Defender`
 
 ### 6. Some processes were killed and the associated binaries were deleted. What were the names of the two binaries? (format: file.xyz,file.xyz)
 
+After confirming that IonicLarge.exe modified registry keys and made outbound connections, I suspected the attacker might have tried to clean up traces. Killing processes and deleting binaries is a common tactic to evade detection or remove tools after use.
+
+The Splunk query I used was:
+```
+index=* sourcetype=*sysmon* (CommandLine="*taskkill*" OR CommandLine="*del*")
+
+```
+<img width="1396" height="506" alt="Screenshot (129)" src="https://github.com/user-attachments/assets/3508161f-2fb6-4002-b25c-e5dfa4eab689" />
+
+Splunk logs show that two processes were explicitly terminated and their binaries deleted shortly after. The filenames appear randomly generated, which is typical of attacker tooling or payload droppers. This behavior suggests an attempt to clean up post-exploitation artifacts and avoid detection during forensic review.
+
 Answer:`WvmIOrcfsuILdX6SNwIRmGOJ.exe,phcIAmLJMAIMSa9j9MpgJo1m.exe`
 
 ### 7. The attacker ran several commands within a PowerShell session to change the behaviour of Windows Defender. What was the last command executed in the series of similar commands?
 
+I broadened the scope to any Defender-related commands executed via PowerShell. By filtering for all process creation events involving PowerShell (EventCode=1), I inspected the CommandLine field directly.
+
+The Splunk query I used was:
+```
+index=* sourcetype=*sysmon* EventCode=1 powershell
+```
+<img width="1412" height="758" alt="Screenshot (130)" src="https://github.com/user-attachments/assets/090b3bad-3cf9-477a-9341-251a4cf8e48e" />
+
+Mutliple entries show the same command above being executed. This WMIC command targets Windows Defender's internal namespace and sets a custom action for threat ID 2147737394. Action 6 represents “Allow,” meaning the attacker explicitly permitted this threat to run undetected. The use of Force=True applies it immediately, even if Defender policies would normally block it. This command is an advanced way to whitelist malware and suppress alerts.
+
 Answer:`powershell WMIC /NAMESPACE:\\root\Microsoft\Windows\Defender PATH MSFT_MpPreference call Add ThreatIDDefaultAction_Ids=2147737394 ThreatIDDefaultAction_Actions=6 Force=True`
 
-
 ### 8. Based on the previous answer, what were the four IDs set by the attacker? Enter the answer in order of execution. (format: 1st,2nd,3rd,4th)
+
+After identifying the WMIC command used to modify Defender behavior, I wanted to extract all instances where ThreatIDDefaultAction_Ids were set. These IDs represent specific threat categories that the attacker configured to be allowed through Defender.
+
+The Splunk query I used was:
+```
+index=* sourcetype=*sysmon* CommandLine="*ThreatIDDefaultAction_Ids*" 
+| table _time, CommandLine 
+| sort _time
+```
+
+<img width="1406" height="1005" alt="Screenshot (132)" src="https://github.com/user-attachments/assets/5f8f5d5c-5723-402b-a0a6-9025bbfb58a2" />
+
+Did some scanning...
+
+Each of these IDs corresponds to a threat category that the attacker explicitly configured to be allowed `ThreatIDDefaultAction_Actions=6`. This effectively whitelists those threats in Defender, reducing its ability to block or alert on them. The use of WMIC and the `MSFT_MpPreference` class shows a deliberate attempt to bypass security controls using native Windows tooling.
 
 Answer:`2147735503,2147737010,2147737007,2147737394`
 
 ### 9. Another malicious binary was executed on the infected workstation from another AppData location. What was the full path to the binary?
 
+After identifying multiple binaries in AppData\Local\Temp, I wanted to check other common AppData subdirectories like Roaming and LocalLow. Attackers often drop payloads in these paths to avoid detection and maintain persistence under user-level privileges.
+
+The Splunk query I used was:
+```
+index=* sourcetype=*sysmon* Image="*AppData*"
+```
+<img width="1423" height="85" alt="Screenshot (134)" src="https://github.com/user-attachments/assets/3ab48ea4-9f0f-47e7-a760-b120d5f0adef" />
+
+his binary was executed from the Roaming directory, which is commonly used for user-specific application data. The folder name EasyCalc and the executable EasyCalc.exe suggest it may have been disguised as a legitimate calculator app. Its location and execution behavior indicate it was likely part of the attacker’s toolkit, possibly used for persistence or further compromise.
+
 Answer:`C:\Users\Finance01\AppData\Roaming\EasyCalc\EasyCalc.exe`
 
 ### 10. What were the DLLs that were loaded from the binary from the previous question? Enter the answers in alphabetical order. (format: file1.dll,file2.dll,file3.dll)
 
+After confirming that EasyCalc.exe was executed from the AppData\Roaming\EasyCalc directory, I wanted to inspect which DLLs it loaded during runtime. DLL loading behavior can reveal dependencies, potential hijack targets, or malicious modules injected into the process.
+
+The Splunk query I used was:
+```
+index=* sourcetype=*sysmon* EventCode=7 Image="*EasyCalc.exe"
+```
+Sort by time and ImageLoaded
+```
+index=* sourcetype=*sysmon* ImageLoaded Image="*EasyCalc.exe" | table _time, ImageLoaded
+```
+<img width="1423" height="941" alt="Screenshot (135)" src="https://github.com/user-attachments/assets/91c7f9e4-1718-48e7-b0bd-01d49751c2d4" />
+
+These DLLs are part of standard Windows functionality, but their presence confirms that EasyCalc.exe successfully invoked system-level components. If any of these were loaded from non-standard paths or replaced by malicious versions, it could indicate DLL hijacking or injection. In this case, the loading behavior should be reviewed alongside file hashes and signatures for integrity.
+
 Answer:`ffmpeg.dll,nw.dll,nw_elf.dll`
+
+## Summary
+During the forensic investigation of the “New Hire Old Artifacts” workstation, multiple indicators of compromise were uncovered. The attacker executed several malicious binaries from user-level `AppData paths`, including `11111.exe`, `IonicLarge.exe`, and `EasyCalc.exe`. These tools enabled credential harvesting, made outbound connections to a known malicious IP `(2[.]56[.]59[.]42)`, and actively modified Windows Defender settings through PowerShell and WMIC commands. Registry keys were altered to establish persistence and weaken system defenses, while evidence of cleanup was found in the form of terminated processes and deleted binaries. The attacker also used obscure directories to execute disguised malware (ex `EasyCalc.exe` from Roaming) which loaded multiple system DLLs during runtime.
+
+
+
 

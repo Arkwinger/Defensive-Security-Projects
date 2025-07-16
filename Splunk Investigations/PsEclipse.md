@@ -1,6 +1,6 @@
 # PS Eclipse Walkthrough
 
-<img width="733" height="378" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/e13dd90b-46ea-467f-a3b9-9dfdd38f9980" />
+<img width="1000" height="500" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/9c2fe48f-baed-40e6-8594-b6bb2c142c37" />
 
 
 "Scenario : You are a SOC Analyst for an MSSP (Managed Security Service Provider) company called TryNotHackMe .

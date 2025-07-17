@@ -1,8 +1,17 @@
 # Unattended Walkthrough
 
-Summary: "Welcome to the team, kid. I have something for you to get your feet wet.
+<img width="800" height="291" alt="Screenshot (148)" src="https://github.com/user-attachments/assets/007e3bf0-ecca-4f76-80e0-e327673d1894" />
+
+
+## Summary: 
+"Welcome to the team, kid. I have something for you to get your feet wet.
 Our client has a newly hired employee who saw a suspicious-looking janitor exiting his office as he was about to return from lunch.
 I want you to investigate if there was user activity while the user was away between 12:05 PM to 12:45 PM on the 19th of November 2022. If there are, figure out what files were accessed and exfiltrated externally."
+
+## Task 1 - 2 `No Answer Needed`
+
+In this room, we will be using `KAPE`, `Autopsy`, `Registry`, `Explorer`, and `JLECmd`.
+Each tool plays a role in reconstructing user behavior and identifying signs of intrusion or exfiltration. Want help mapping these tools to specific steps in your report or timeline? I can help you stitch it all together.
 
 
 ## Task 3
@@ -89,6 +98,10 @@ We can find this by going back into autopsy, and lookinng in the web browser his
 ### When was the text file from the previous question last modified? (MM/DD/YYYY HH:MM) Answer: `11/19/2022 12:12`
 ### What is the generated URL of the exfiltrated data? Answer: `https://pastebin.com/1FQASAav`
 ### What is the string that was copied to the pastebin URL? Answer: `ne7AIRhi3PdESy9RnOrN`
+
+## Summary:
+
+The intruder began by searching for PDF files related to “continental,” then downloaded 7z2201-x64.exe, suggesting preparation for archiving or extracting sensitive data. A PNG was accessed shortly after, indicating visual content may have been viewed or staged. A text file was created on the Desktop, modified at 12:12 PM and opened twice. Its contents — ne7AIRhi3PdESy9RnOrN — were exfiltrated via Pastebin at this URL: https://pastebin.com/1FQASAav, bypassing physical transfer limitations like USB.
 
 ## Mitigations:
 Block known paste-sharing platforms like Pastebin at the firewall level.

@@ -1,4 +1,4 @@
-# LogSentinel mimics a threat detection engine used to analyze system and web logs for suspicious activity. It showcases core blue team concepts like IOC matching, anomaly detection, and incident reporting — perfect for training and portfolio purposes.
+# LogSentinel mimics a threat detection engine used to analyze system and web logs for suspicious activity. It showcases core blue team concepts like IOC matching, anomaly detection, and incident reporting.
 
 ## Features
 - Simulated analysis of access.log and auth.log

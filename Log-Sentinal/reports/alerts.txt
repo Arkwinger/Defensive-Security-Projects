@@ -1,0 +1,10 @@
+[ALERT] Repeated 404s from IP 192.168.56.101 — possible scanning activity.
+[ALERT] Multiple failed SSH logins for user 'annie' — possible brute-force attempt.
+[ALERT] Access to `/admin` and `/hidden_panel` from suspicious IP — potential enumeration attempt.
+[ALERT] Login attempts at unusual hours detected from 192.168.56.102.
+[ALERT] IP 192.168.56.103 triggered known IOC: CVE-2023-1183 web exploit pattern.
+[ALERT] Excessive POST requests to `/login.php` — possible credential stuffing detected.
+[ALERT] Suspicious access to non-existent endpoint `/wp-json/fake-entry` — may indicate bot activity.
+[ALERT] Authenticated session hijack suspected — repeated session tokens used from different IPs.
+[ALERT] SSH logins from deprecated protocol version detected (v1.99) — recommend disabling legacy support.
+[ALERT] IP 192.168.56.104 accessed `/config.php` without authentication — potential LFI attempt.

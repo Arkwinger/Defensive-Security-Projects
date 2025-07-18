@@ -1,0 +1,13 @@
+192.168.56.101
+192.168.56.102
+Failed password for annie
+GET /admin
+GET /config.php
+/wp-json/
+CVE-2023-1183
+session token reuse
+login at 03:00 AM
+404 error spikes
+deprecated SSH protocol v1.99
+POST /login.php
+access denied

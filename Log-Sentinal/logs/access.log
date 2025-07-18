@@ -1,0 +1,10 @@
+192.168.56.101 - - [11/Jul/2025:19:45] "GET /admin HTTP/1.1" 404
+192.168.56.101 - - [11/Jul/2025:19:45] "GET /hidden_panel HTTP/1.1" 404
+192.168.56.101 - - [11/Jul/2025:19:45] "GET /config.php HTTP/1.1" 403
+192.168.56.102 - - [11/Jul/2025:19:46] "POST /login.php HTTP/1.1" 200
+192.168.56.102 - - [11/Jul/2025:19:46] "POST /login.php HTTP/1.1" 401
+192.168.56.103 - - [11/Jul/2025:19:47] "GET /wp-json/fake-entry HTTP/1.1" 404
+192.168.56.104 - - [11/Jul/2025:19:48] "GET /favicon.ico HTTP/1.1" 200
+192.168.56.105 - - [11/Jul/2025:19:49] "GET /dashboard HTTP/1.1" 302
+192.168.56.101 - - [11/Jul/2025:19:50] "GET /robots.txt HTTP/1.1" 200
+192.168.56.101 - - [11/Jul/2025:19:50] "GET /wp-admin/setup-config.php HTTP/1.1" 200

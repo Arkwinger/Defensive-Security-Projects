@@ -236,3 +236,13 @@ Answer format: ****://**.**************.**/************.***
 My machine died, but from earlier I had the answer from looking at powershell (I think)
 
 Answer: `http://ff.sillytechninja.io/ransomboogey.exe`
+
+
+
+
+
+
+
+
+
+Thanks for reading! :)

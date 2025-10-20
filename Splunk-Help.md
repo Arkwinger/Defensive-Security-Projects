@@ -37,8 +37,14 @@ index="main" sourcetype="WinEventLog:Sysmon" EventCode=13 Image="C:\\Windows\\sy
 ```
 Let's break down each part of this query:
 
-index="main" sourcetype="WinEventLog:Sysmon" EventCode=13 Image="C:\\Windows\\system32\\services.exe" TargetObject="HKLM\\System\\CurrentControlSet\\Services\\*\\ImagePath": This part of the query is selecting logs from the main index with the sourcetype of WinEventLog:Sysmon. We're specifically looking for events with EventCode=13. In Sysmon logs, EventCode 13 represents an event where a registry value was set. The Image field is set to C:\\Windows\\system32\\services.exe to filter for events where the services.exe process was involved, which is the Windows process responsible for handling service creation and management. The TargetObject field specifies the registry keys that we're interested in. In this case, we're looking for changes to the ImagePath value under any service key in HKLM\\System\\CurrentControlSet\\Services. The ImagePath registry value of a service specifies the path to the executable file for the service.
-| rex field=Details "(?<reg_file_name>[^\\\]+)$": The rex command here is extracting the file name from the Details field using a regular expression. The pattern [^\\\]+)$ captures the part of the path after the last backslash, which is typically the file name. This value is stored in a new field reg_file_name.
+```
+index="main" sourcetype="WinEventLog:Sysmon" EventCode=13 Image="C:\\Windows\\system32\\services.exe" TargetObject="HKLM\\System\\CurrentControlSet\\Services\\*\\ImagePath":
+```
+ This part of the query is selecting logs from the main index with the sourcetype of WinEventLog:Sysmon. We're specifically looking for events with EventCode=13. In Sysmon logs, EventCode 13 represents an event where a registry value was set. The Image field is set to C:\\Windows\\system32\\services.exe to filter for events where the services.exe process was involved, which is the Windows process responsible for handling service creation and management. The TargetObject field specifies the registry keys that we're interested in. In this case, we're looking for changes to the ImagePath value under any service key in HKLM\\System\\CurrentControlSet\\Services. The ImagePath registry value of a service specifies the path to the executable file for the service.
+```
+| rex field=Details "(?<reg_file_name>[^\\\]+)$"
+```
+ The rex command here is extracting the file name from the Details field using a regular expression. The pattern [^\\\]+)$ captures the part of the path after the last backslash, which is typically the file name. This value is stored in a new field reg_file_name.
 | eval file_name = if(isnull(file_name),reg_file_name,(file_name)): This eval command checks if the file_name field is null. If it is, it sets file_name to the value of reg_file_name (the file name we extracted from the Details field). If file_name is not null, it remains the same.
 | stats values(Image), values(Details), values(TargetObject), values(_time), values(EventCode), count by file_name, ComputerName: Finally, the stats command aggregates the data by file_name and ComputerName. For each unique combination of file_name and ComputerName, it collects all the unique values of Image, Details, TargetObject, and _time, and counts the number of events.
 In summary, this query is looking for instances where the services.exe process has modified the ImagePath value of any service. The output will include the details of these modifications, including the name of the modified service, the new ImagePath value, and the time of the modification.
@@ -116,8 +122,8 @@ Within the less frequent search results, clear indications emerge, highlighting 
 The following SPL identifies potential malware activity by checking for the creation of executable and DLL files outside the Windows directory. It then groups and counts these activities by user and target filename.
 
   
-``
-`index="main" EventCode=11 (TargetFilename="*.exe" OR TargetFilename="*.dll") TargetFilename!="*\\windows\\*" | stats count by User, TargetFilename | sort + count
+```
+index="main" EventCode=11 (TargetFilename="*.exe" OR TargetFilename="*.dll") TargetFilename!="*\\windows\\*" | stats count by User, TargetFilename | sort + count
 ```
 Splunk search results showing users, target filenames, and event counts for executable and DLL files.
 
@@ -143,6 +149,7 @@ Attackers often utilize non-standard ports during their operations. The followin
 ```
 index="main" EventCode=3 NOT (DestinationPort=80 OR DestinationPort=443 OR DestinationPort=22 OR DestinationPort=21) | stats count by SourceIp, DestinationIp, DestinationPort | sort - count
 ```
+
 Splunk search results showing source IPs, destination IPs, destination ports, and event counts.
 
 Within the search results, clear indications emerge, highlighting the usage of non-standard ports communication or tool-transferring purposes.
